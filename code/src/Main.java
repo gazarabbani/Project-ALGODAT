@@ -38,9 +38,9 @@ public class Main {
         listBarang.enqueue("Lemari", "user7");
 
         //tiket dummy
-        listTiket.enqueue("Regular", 50000, "user1");
-        listTiket.enqueue("VIP", 100000, "user2");
-        listTiket.enqueue("Family Package", 150000, "user3");
+        listTiket.enqueue("Regular", 50000, "SYSTEM");
+        listTiket.enqueue("VIP", 100000, "SYSTEM");
+        listTiket.enqueue("Family Package", 150000, "SYSTEM");
         
         boolean running = true;
         
