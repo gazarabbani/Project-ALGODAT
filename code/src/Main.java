@@ -1,14 +1,38 @@
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
-    private static ListAdmin listAdmin = new ListAdmin();
-    private static ListUser listUser = new ListUser();
-    private static ListTiket listTiket = new ListTiket();
-    private static ListWahana listWahana = new ListWahana();
-    private static ListBarang listBarang = new ListBarang();
+    static Scanner scanner = new Scanner(System.in);
+    static ListAdmin listAdmin = new ListAdmin();
+    static ListUser listUser = new ListUser();
+    static ListTiket listTiket = new ListTiket();
+    static ListWahana listWahana = new ListWahana();
+    static ListBarang listBarang = new ListBarang();
     
     public static void main(String[] args) {
+        // admin
+        listAdmin.addAdmin("admin", "Administrator", "admin123");
+
+        // dummy wahana
+        listWahana.addWahana("Roller Coaster", "Ekstrem", 24);
+        listWahana.addWahana("Bianglala", "Santai", 40);
+        listWahana.addWahana("Kora-Kora", "Sedang", 30);
+        listWahana.addWahana("Rumah Hantu", "Horor", 15);
+        listWahana.addWahana("Bumper Car", "Anak", 20);
+        
+        // tambahkan koneksi antar wahana (edge dengan jarak dalam meter)
+        listWahana.addEdge("W001", "W002", 150);
+        listWahana.addEdge("W002", "W001", 150);
+        listWahana.addEdge("W001", "W003", 200);
+        listWahana.addEdge("W003", "W001", 200);
+        listWahana.addEdge("W002", "W003", 100);
+        listWahana.addEdge("W003", "W002", 100);
+        listWahana.addEdge("W002", "W004", 180);
+        listWahana.addEdge("W004", "W002", 180);
+        listWahana.addEdge("W003", "W005", 120);
+        listWahana.addEdge("W005", "W003", 120);
+        listWahana.addEdge("W004", "W005", 90);
+        listWahana.addEdge("W005", "W004", 90);
+
         // tambahin user dummy untuk testing
         listUser.addUser("user1", "Gaza", "gaza123");
         listUser.addUser("user2", "Karin", "karin123");
@@ -41,6 +65,23 @@ public class Main {
         listTiket.enqueue("Regular", 50000, "SYSTEM");
         listTiket.enqueue("VIP", 100000, "SYSTEM");
         listTiket.enqueue("Family Package", 150000, "SYSTEM");
+
+        // tiket dummy untuk user
+        tambahDummyTiketUser("Regular", 50000, "user1");
+        tambahDummyTiketUser("VIP", 50000, "user1");
+        tambahDummyTiketUser("VIP", 50000, "user2");
+        tambahDummyTiketUser("Regular", 50000, "user2");
+        tambahDummyTiketUser("Family Package", 50000, "user3");
+        tambahDummyTiketUser("Regular", 50000, "user3");
+        tambahDummyTiketUser("Regular", 50000, "user3");
+        tambahDummyTiketUser("VIP", 50000, "user3");
+        tambahDummyTiketUser("Regular", 50000, "user4");
+        tambahDummyTiketUser("VIP", 50000, "user5");
+        tambahDummyTiketUser("Regular", 50000, "user5");
+        tambahDummyTiketUser("Family Package", 50000, "user6");
+        tambahDummyTiketUser("VIP", 50000, "user6");
+        tambahDummyTiketUser("Family Package", 50000, "user6");
+        tambahDummyTiketUser("Family Package", 50000, "user7");
         
         boolean running = true;
         
@@ -85,9 +126,20 @@ public class Main {
         scanner.close();
     }
     
-// TAMPILAN HEADER
-    
-    private static void tampilkanHeaderUtama() {
+    // Bantuan untuk jumlah tiket
+
+    public static void tambahDummyTiketUser(String jenis, double harga, String userId) {
+        NodeUser user = listUser.searchUser(userId);
+        if (user != null) {
+            listTiket.push(jenis, harga, userId);
+            listTiket.enqueue(jenis, harga, userId);
+            user.setNoTiket(user.getNoTiket() + 1);
+        }
+    }
+
+    // TAMPILAN HEADER
+
+    public static void tampilkanHeaderUtama() {
         System.out.println("╔════════════════════════════════════════════════════════╗");
         System.out.println("║                                                        ║");
         System.out.println("║                    SELAMAT DATANG!                     ║");
@@ -99,7 +151,7 @@ public class Main {
     
     // LOGIN & REGISTER
     
-    private static void loginAdmin() {
+    public static void loginAdmin() {
         clearScreen();
         System.out.println("╔════════════════════════════════════════════════════════╗");
         System.out.println("║              LOGIN ADMIN                               ║");
@@ -123,7 +175,7 @@ public class Main {
         }
     }
     
-    private static void loginUser() {
+    public static void loginUser() {
         clearScreen();
         System.out.println("╔════════════════════════════════════════════════════════╗");
         System.out.println("║              LOGIN USER                                ║");
@@ -147,7 +199,7 @@ public class Main {
         }
     }
     
-    private static void registerUser() {
+    public static void registerUser() {
         clearScreen();
         System.out.println("╔════════════════════════════════════════════════════════╗");
         System.out.println("║              REGISTER USER BARU                        ║");
@@ -175,7 +227,7 @@ public class Main {
     
     //  MENU ADMIN
     
-    private static void menuAdmin(NodeAdmin admin) {
+    public static void menuAdmin(NodeAdmin admin) {
         boolean running = true;
         
         while (running) {
@@ -219,7 +271,7 @@ public class Main {
         }
     }
     
-    private static void menuKelolaTiket() {
+    public static void menuKelolaTiket() {
         boolean running = true;
         
         while (running) {
@@ -265,7 +317,7 @@ public class Main {
         }
     }
     
-    private static void tambahTiket() {
+    public static void tambahTiket() {
         System.out.print("\nJenis Tiket: ");
         String jenis = scanner.nextLine();
         System.out.print("Harga: Rp ");
@@ -276,7 +328,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void editHargaTiket() {
+    public static void editHargaTiket() {
         listTiket.displayJenisTiketTersedia();
         System.out.print("\nMasukkan jenis tiket yang ingin diedit: ");
         String jenis = scanner.nextLine();
@@ -287,7 +339,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void menuKelolaUser() {
+    public static void menuKelolaUser() {
         boolean running = true;
         
         while (running) {
@@ -332,14 +384,14 @@ public class Main {
         }
     }
     
-    private static void hapusUser() {
+    public static void hapusUser() {
         System.out.print("\nMasukkan User ID yang akan dihapus: ");
         String userId = scanner.nextLine();
         listUser.deleteUser(userId);
         tekanEnter();
     }
     
-    private static void editUser() {
+    public static void editUser() {
 
         System.out.print("\nMasukkan User ID yang akan diedit: ");
         String userId = scanner.nextLine();
@@ -361,7 +413,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void menuKelolaWahana() {
+    public static void menuKelolaWahana() {
         boolean running = true;
         
         while (running) {
@@ -407,19 +459,38 @@ public class Main {
         }
     }
     
-    private static void tambahWahana() {
+    public static void tambahWahana() {
         System.out.print("\nNama Wahana: ");
         String nama = scanner.nextLine();
-        System.out.print("Kategori (Ekstrem/Sedang/Santai/Anak/Horor): ");
-        String kategori = scanner.nextLine();
+        String kategori;
+        boolean validKategori = false;
+        do {
+            System.out.print("Kategori (Ekstrem/Sedang/Santai/Anak/Horor): ");
+            kategori = scanner.nextLine().trim(); // Trim untuk menghilangkan spasi
+        
+            String kategoriLower = kategori.toLowerCase();
+        
+            if (kategoriLower.equals("ekstrem") ||
+                kategoriLower.equals("sedang") ||
+                kategoriLower.equals("santai") ||
+                kategoriLower.equals("anak") ||
+                kategoriLower.equals("horor"))
+            {
+                kategori = kategori.substring(0, 1).toUpperCase() + kategoriLower.substring(1);
+                validKategori = true;
+            } else {
+                System.out.println("  Kategori tidak valid! Harap masukkan salah satu dari: Ekstrem/Sedang/Santai/Anak/Horor.");
+            }
+        } while (!validKategori);
         System.out.print("Kapasitas: ");
         int kapasitas = inputInt();
         
         listWahana.addWahana(nama, kategori, kapasitas);
+        System.out.println("  Wahana baru berhasil ditambahkan!");
         tekanEnter();
     }
     
-    private static void editWahana() {
+    public static void editWahana() {
         listWahana.displayList();
         System.out.print("\nMasukkan ID Wahana yang akan diedit: ");
         String id = scanner.nextLine();
@@ -443,7 +514,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void hapusWahana() {
+    public static void hapusWahana() {
         listWahana.displayList();
         System.out.print("\nMasukkan ID Wahana yang akan dihapus: ");
         String id = scanner.nextLine();
@@ -451,7 +522,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void tambahRuteWahana() {
+    public static void tambahRuteWahana() {
         listWahana.displayList();
         System.out.print("\nID Wahana Asal: ");
         String idAsal = scanner.nextLine();
@@ -468,7 +539,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void menuKelolaBarang() {
+    public static void menuKelolaBarang() {
         boolean running = true;
         
         while (running) {
@@ -503,7 +574,7 @@ public class Main {
         }
     }
     
-    private static void hapusBarang() {
+    public static void hapusBarang() {
         System.out.print("\nMasukkan Kode Barang: ");
         String kode = scanner.nextLine();
         listBarang.deleteBarang(kode);
@@ -512,7 +583,7 @@ public class Main {
     
     // MENU USER
     
-    private static void menuUser(NodeUser user) {
+    public static void menuUser(NodeUser user) {
         boolean running = true;
         
         while (running) {
@@ -571,7 +642,7 @@ public class Main {
         }
     }
     
-    private static void cariJalurTerpendek() {
+    public static void cariJalurTerpendek() {
         listWahana.displayList();
         System.out.print("\nID Wahana Asal: ");
         String idAsal = scanner.nextLine();
@@ -582,7 +653,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void pesanTiket(NodeUser user) {
+    public static void pesanTiket(NodeUser user) {
         listTiket.displayJenisTiketTersedia();
         System.out.print("\nMasukkan jenis tiket yang ingin dibeli: ");
         String jenis = scanner.nextLine();
@@ -608,7 +679,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void titipBarang(NodeUser user) {
+    public static void titipBarang(NodeUser user) {
         System.out.print("\nJenis Barang: ");
         String jenis = scanner.nextLine();
         
@@ -616,7 +687,7 @@ public class Main {
         tekanEnter();
     }
     
-    private static void ambilBarangUser(NodeUser user) {
+    public static void ambilBarangUser(NodeUser user) {
         listBarang.displayByUser(user.getUserId());
         System.out.print("\nMasukkan Kode Barang: ");
         String kode = scanner.nextLine();
@@ -627,7 +698,7 @@ public class Main {
     
     // UTILITY FUNCTIONS
     
-    private static void clearScreen() {
+    public static void clearScreen() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -643,12 +714,12 @@ public class Main {
         }
     }
     
-    private static void tekanEnter() {
+    public static void tekanEnter() {
         System.out.print("\nTekan Enter untuk melanjutkan...");
         scanner.nextLine();
     }
     
-    private static int inputInt() {
+    public static int inputInt() {
         while (true) {
             try {
                 int value = Integer.parseInt(scanner.nextLine());
@@ -659,7 +730,7 @@ public class Main {
         }
     }
     
-    private static double inputDouble() {
+    public static double inputDouble() {
         while (true) {
             try {
                 double value = Double.parseDouble(scanner.nextLine());

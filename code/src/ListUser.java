@@ -90,38 +90,51 @@ public class ListUser {
         return false;
     }
     
-    // display semua user pake sorting berdasarkan noTiket (Bubble Sort)
+
     public void displayUserSorted() {
         if (head == null) {
             System.out.println("Tidak ada user terdaftar.");
             return;
         }
         
-        // convert linked list ke array buat sorting
-        NodeUser[] userArray = new NodeUser[size];
-        NodeUser current = head;
-        int idx = 0;
-        while (current != null) {
-            userArray[idx++] = current;
+        NodeUser sortedHead = null;
+        NodeUser currentOriginal = head;
+        
+        while (currentOriginal != null) {
+            NodeUser nextOriginal = currentOriginal.getNext();
+            currentOriginal.setNext(null);
+            sortedHead = sortedInsert(sortedHead, currentOriginal);
+            currentOriginal = nextOriginal;
+        }
+        
+        displayList(sortedHead);
+    }
+    
+    private NodeUser sortedInsert(NodeUser sortedHead, NodeUser newNode) {
+        if (sortedHead == null || newNode.getNoTiket() >= sortedHead.getNoTiket()) {
+            newNode.setNext(sortedHead);
+            return newNode;
+        }
+        NodeUser current = sortedHead;
+        while (current.getNext() != null && current.getNext().getNoTiket() > newNode.getNoTiket()) {
             current = current.getNext();
         }
+        newNode.setNext(current.getNext());
+        current.setNext(newNode);
         
-        // bubble sort berdasarkan noTiket (descending)
-        for (int i = 0; i < size - 1; i++) {
-            for (int j = 0; j < size - i - 1; j++) {
-                if (userArray[j].getNoTiket() < userArray[j + 1].getNoTiket()) {
-                    NodeUser temp = userArray[j];
-                    userArray[j] = userArray[j + 1];
-                    userArray[j + 1] = temp;
-                }
-            }
-        }
-        
+        return sortedHead;
+    }
+    
+    private void displayList(NodeUser startNode) {
         System.out.println("\n╔════════════════════════════════════════════════════════╗");
-        System.out.println("║              DAFTAR USER (Sorted by Tiket)            ║");
+        System.out.println("║              DAFTAR USER (Sorted by Tiket)             ║");
         System.out.println("╠════════════════════════════════════════════════════════╣");
-        for (NodeUser user : userArray) {
-            System.out.println("║ " + user.toString());
+
+        NodeUser current = startNode;
+        while (current != null) {
+            System.out.printf("║ ID: %-8s | Nama: %-15s | Tiket: %-3d      ║\n",
+                current.getUserId(), current.getNama(), current.getNoTiket());
+            current = current.getNext();
         }
         System.out.println("╚════════════════════════════════════════════════════════╝");
     }

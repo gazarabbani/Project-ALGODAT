@@ -8,33 +8,8 @@ public class ListWahana {
         this.head = null;
         this.size = 0;
         this.idCounter = 1;
-        
-        // inisialisasi wahana default
-        initDefaultWahana();
     }
     
-    // inisialisasi wahana dan rute default
-    private void initDefaultWahana() {
-        addWahana("Roller Coaster", "Ekstrem", 24);
-        addWahana("Bianglala", "Santai", 40);
-        addWahana("Kora-Kora", "Sedang", 30);
-        addWahana("Rumah Hantu", "Horor", 15);
-        addWahana("Bumper Car", "Anak", 20);
-        
-        // tambahkan koneksi antar wahana (edge dengan jarak dalam meter)
-        addEdge("W001", "W002", 150);
-        addEdge("W002", "W001", 150);
-        addEdge("W001", "W003", 200);
-        addEdge("W003", "W001", 200);
-        addEdge("W002", "W003", 100);
-        addEdge("W003", "W002", 100);
-        addEdge("W002", "W004", 180);
-        addEdge("W004", "W002", 180);
-        addEdge("W003", "W005", 120);
-        addEdge("W005", "W003", 120);
-        addEdge("W004", "W005", 90);
-        addEdge("W005", "W004", 90);
-    }
     
     // tambah wahana baru ke graph
     public void addWahana(String namaWahana, String kategori, int kapasitas) {
@@ -308,17 +283,5 @@ public class ListWahana {
         }
         System.out.println("║ Rute: " + pathString);
         System.out.println("╚════════════════════════════════════════════════════════════════╝");
-    }
-    
-    public boolean isEmpty() {
-        return head == null;
-    }
-    
-    public int getSize() {
-        return size;
-    }
-    
-    public NodeWahana getHead() {
-        return head;
     }
 }

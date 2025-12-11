@@ -30,7 +30,7 @@ public class NodeBarang {
     
     @Override
     public String toString() {
-        return "Kode: " + kodeBarang + " | Jenis: " + jenisBarang + 
+        return "Kode: " + kodeBarang + " | Jenis: " + jenisBarang +
                " | User: " + userId + " | Waktu: " + waktuTitip;
     }
 }

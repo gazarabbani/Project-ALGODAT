@@ -3,7 +3,7 @@ public class NodeWahana {
     private String namaWahana;
     private String kategori;
     private int kapasitas;
-    private EdgeWahana edges; // adjacency list untuk koneksi ke wahana lain
+    private EdgeWahana edges;
     private NodeWahana next;
     
     public NodeWahana(String idWahana, String namaWahana, String kategori, int kapasitas) {
@@ -35,7 +35,7 @@ public class NodeWahana {
     
     @Override
     public String toString() {
-        return "ID: " + idWahana + " | Wahana: " + namaWahana + 
+        return "ID: " + idWahana + " | Wahana: " + namaWahana +
                " | Kategori: " + kategori + " | Kapasitas: " + kapasitas;
     }
 }
@@ -68,7 +68,7 @@ class DijkstraData {
     int jarak;
     String prevId;
     boolean visited;
-    DijkstraData next; // Untuk linked list
+    DijkstraData next;
 
     public DijkstraData(String id) {
         this.id = id;

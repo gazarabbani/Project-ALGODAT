@@ -7,6 +7,7 @@ public class ListTiket {
     private NodeTiket top;
     private int queueSize;
     private int stackSize;
+    private int systemcounter;
     private int idCounter;
     
     public ListTiket() {
@@ -21,8 +22,8 @@ public class ListTiket {
     // tambah tiket ke riwayat (dari belakang)
     public void enqueue(String jenisTiket, double harga, String userId) {
         String timestamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
-        NodeTiket newNode = new NodeTiket("T" + String.format("%03d", idCounter++), 
-                                          jenisTiket, harga, userId, timestamp);
+        NodeTiket newNode = new NodeTiket("T" + String.format("%03d", idCounter++),
+                                            jenisTiket, harga, userId, timestamp);
         
         if (rear == null) {
             front = rear = newNode;
@@ -31,6 +32,9 @@ public class ListTiket {
             rear = newNode;
         }
         queueSize++;
+        if(userId.equals("SYSTEM")) {
+            systemcounter++;
+        }
     }
 
     // hapus tiket berdasarkan ID tiket
@@ -62,8 +66,9 @@ public class ListTiket {
     
     // display semua riwayat pembelian
     public void displayQueue() {
-        if (front == null) {
-            System.out.println("Tidak ada riwayat pembelian tiket.");
+        NodeTiket currentCheck = front;
+        while (front == null || (currentCheck.getUserId().equals("SYSTEM") && systemcounter == queueSize)) {
+            System.out.println("  Riwayat pembelian tiket kosong!");
             return;
         }
         
@@ -73,8 +78,8 @@ public class ListTiket {
         
         NodeTiket current = front;
         while (current != null) {
-            System.out.println("║ " + current.toString());
-            current = current.getNext();
+                System.out.println("║ " + current.toString());
+                current = current.getNext();
         }
         System.out.println("╚═══════════════════════════════════════════════════════════════════════════╝");
     }
@@ -119,7 +124,7 @@ public class ListTiket {
     public void push(String jenisTiket, double harga, String userId) {
         String timestamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
         NodeTiket newNode = new NodeTiket("UT" + String.format("%03d", stackSize + 1), 
-                                          jenisTiket, harga, userId, timestamp);
+                                            jenisTiket, harga, userId, timestamp);
         
         newNode.setNext(top);
         top = newNode;
@@ -137,11 +142,6 @@ public class ListTiket {
         top = top.getNext();
         stackSize--;
         return temp;
-    }
-    
-    // lihat tiket paling atas tanpa menghapus
-    public NodeTiket peek() {
-        return top;
     }
     
     // display stack/tampilkan tiket user
