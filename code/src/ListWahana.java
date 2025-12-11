@@ -1,4 +1,3 @@
-import java.util.*;
 
 public class ListWahana {
     private NodeWahana head;
@@ -229,44 +228,48 @@ public class ListWahana {
             return;
         }
         
-        // inisialisasi
-        Map<String, Integer> jarak = new HashMap<>();
-        Map<String, String> prev = new HashMap<>();
-        Set<String> visited = new HashSet<>();
-        PriorityQueue<NodeJarak> pq = new PriorityQueue<>((a, b) -> a.jarak - b.jarak);
+        DijkstraList dataList = new DijkstraList();
         
-        // set semua jarak ke infinity
         NodeWahana temp = head;
         while (temp != null) {
-            jarak.put(temp.getIdWahana(), Integer.MAX_VALUE);
+            dataList.add(new DijkstraData(temp.getIdWahana()));
             temp = temp.getNext();
         }
         
-        // jarak ke node asal = 0
-        jarak.put(idWahanaAsal, 0);
-        pq.add(new NodeJarak(idWahanaAsal, 0));
-        
-        // algoritma Dijkstra
-        while (!pq.isEmpty()) {
-            NodeJarak current = pq.poll();
-            String currentId = current.id;
+        DijkstraData asalData = dataList.get(idWahanaAsal);
+        if (asalData != null) {
+            asalData.jarak = 0;
+        }
+
+        while (!dataList.allVisited()) {
+            DijkstraData currentData = dataList.getMinUnvisited();
             
-            if (visited.contains(currentId)) continue;
-            visited.add(currentId);
+            if (currentData == null || currentData.jarak == Integer.MAX_VALUE) {
+                break;
+            }
             
-            if (currentId.equals(idWahanaTujuan)) break;
+            String currentId = currentData.id;
+            currentData.visited = true;
+            
+            if (currentId.equals(idWahanaTujuan)) {
+                break;
+            }
             
             NodeWahana currentWahana = searchWahana(currentId);
             EdgeWahana edge = currentWahana.getEdges();
             
             while (edge != null) {
                 String neighborId = edge.getTujuan().getIdWahana();
-                int newJarak = jarak.get(currentId) + edge.getJarak();
+                DijkstraData neighborData = dataList.get(neighborId);
                 
-                if (newJarak < jarak.get(neighborId)) {
-                    jarak.put(neighborId, newJarak);
-                    prev.put(neighborId, currentId);
-                    pq.add(new NodeJarak(neighborId, newJarak));
+                if (neighborData != null && !neighborData.visited) {
+                    // Cek jarak
+                    int newJarak = currentData.jarak + edge.getJarak();
+                    
+                    if (newJarak < neighborData.jarak) {
+                        neighborData.jarak = newJarak;
+                        neighborData.prevId = currentId;
+                    }
                 }
                 
                 edge = edge.getNext();
@@ -274,46 +277,37 @@ public class ListWahana {
         }
         
         // tampilin hasil
-        if (!prev.containsKey(idWahanaTujuan) && !idWahanaAsal.equals(idWahanaTujuan)) {
+        DijkstraData tujuanData = dataList.get(idWahanaTujuan);
+
+        if (tujuanData == null || tujuanData.prevId == null && !idWahanaAsal.equals(idWahanaTujuan)) {
             System.out.println("  Tidak ada jalur dari " + asal.getNamaWahana() + 
-                             " ke " + tujuan.getNamaWahana());
+                               " ke " + tujuan.getNamaWahana());
             return;
         }
-        
-        // reconstruct path
-        List<String> path = new ArrayList<>();
-        String current = idWahanaTujuan;
-        while (current != null) {
-            path.add(0, current);
-            current = prev.get(current);
-        }
-        
         System.out.println("\n╔════════════════════════════════════════════════════════════════╗");
-        System.out.println("║              JALUR TERPENDEK (DIJKSTRA)                        ║");
+        System.out.println("║                     JALUR TERPENDEK (DIJKSTRA)                   ║");
         System.out.println("╠════════════════════════════════════════════════════════════════╣");
         System.out.println("║ Dari: " + asal.getNamaWahana());
         System.out.println("║ Ke: " + tujuan.getNamaWahana());
-        System.out.println("║ Total Jarak: " + jarak.get(idWahanaTujuan) + " meter");
+        System.out.println("║ Total Jarak: " + tujuanData.jarak + " meter");
         System.out.println("║");
-        System.out.print("║ Rute: ");
-        for (int i = 0; i < path.size(); i++) {
-            NodeWahana w = searchWahana(path.get(i));
-            System.out.print(w.getNamaWahana());
-            if (i < path.size() - 1) System.out.print(" → ");
-        }
-        System.out.println();
-        System.out.println("╚════════════════════════════════════════════════════════════════╝");
-    }
-    
-    // helper class untuk priority queue di Dijkstra
-    private class NodeJarak {
-        String id;
-        int jarak;
+
+        String pathString = "";
+        String currentId = idWahanaTujuan;
         
-        NodeJarak(String id, int jarak) {
-            this.id = id;
-            this.jarak = jarak;
+        while (currentId != null) {
+            NodeWahana w = searchWahana(currentId);
+            
+            if (pathString.length() > 0) {
+                pathString = " → " + pathString;
+            }
+            pathString = w.getNamaWahana() + pathString;
+            
+            DijkstraData data = dataList.get(currentId);
+            currentId = data.prevId;
         }
+        System.out.println("║ Rute: " + pathString);
+        System.out.println("╚════════════════════════════════════════════════════════════════╝");
     }
     
     public boolean isEmpty() {

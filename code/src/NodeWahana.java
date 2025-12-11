@@ -61,3 +61,77 @@ class EdgeWahana {
     public EdgeWahana getNext() { return next; }
     public void setNext(EdgeWahana next) { this.next = next; }
 }
+
+// Helper class untuk menyimpan data jarak dan node sebelumnya
+class DijkstraData {
+    String id;
+    int jarak;
+    String prevId;
+    boolean visited;
+    DijkstraData next; // Untuk linked list
+
+    public DijkstraData(String id) {
+        this.id = id;
+        this.jarak = Integer.MAX_VALUE;
+        this.prevId = null;
+        this.visited = false;
+        this.next = null;
+    }
+}
+
+// Linked List sederhana untuk menyimpan data Dijkstra
+class DijkstraList {
+    DijkstraData head;
+
+    public void add(DijkstraData data) {
+        if (head == null) {
+            head = data;
+        } else {
+            DijkstraData current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = data;
+        }
+    }
+
+    // Mencari data berdasarkan ID Wahana
+    public DijkstraData get(String id) {
+        DijkstraData current = head;
+        while (current != null) {
+            if (current.id.equals(id)) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    // Mencari node dengan jarak minimum yang belum dikunjungi
+    public DijkstraData getMinUnvisited() {
+        DijkstraData current = head;
+        DijkstraData minNode = null;
+        int minJarak = Integer.MAX_VALUE;
+
+        while (current != null) {
+            if (!current.visited && current.jarak < minJarak) {
+                minJarak = current.jarak;
+                minNode = current;
+            }
+            current = current.next;
+        }
+        return minNode;
+    }
+    
+    // Mengecek apakah semua node sudah dikunjungi atau belum
+    public boolean allVisited() {
+        DijkstraData current = head;
+        while (current != null) {
+            if (!current.visited) {
+                return false;
+            }
+            current = current.next;
+        }
+        return true;
+    }
+}

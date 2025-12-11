@@ -113,7 +113,7 @@ public class ListTiket {
         }
     }
     
-    // STACK (Tiket User) 
+    // STACK (Tiket User)
     
     // tambah tiket ke stack user
     public void push(String jenisTiket, double harga, String userId) {

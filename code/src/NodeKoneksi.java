@@ -1,4 +1,4 @@
-public class NodeKoneksi { //edge untuk graph wahana
+public class NodeKoneksi { 
     String namaWahana;
     NodeKoneksi next;
 
