@@ -93,52 +93,54 @@ public class ListUser {
 
     public void displayUserSorted() {
         if (head == null) {
-            System.out.println("Tidak ada user terdaftar.");
+            System.out.println("  Daftar user kosong.");
             return;
         }
-        
-        NodeUser sortedHead = null;
-        NodeUser currentOriginal = head;
-        
-        while (currentOriginal != null) {
-            NodeUser nextOriginal = currentOriginal.getNext();
-            currentOriginal.setNext(null);
-            sortedHead = sortedInsert(sortedHead, currentOriginal);
-            currentOriginal = nextOriginal;
-        }
-        
-        displayList(sortedHead);
-    }
-    
-    private NodeUser sortedInsert(NodeUser sortedHead, NodeUser newNode) {
-        if (sortedHead == null || newNode.getNoTiket() >= sortedHead.getNoTiket()) {
-            newNode.setNext(sortedHead);
-            return newNode;
-        }
-        NodeUser current = sortedHead;
-        while (current.getNext() != null && current.getNext().getNoTiket() > newNode.getNoTiket()) {
-            current = current.getNext();
-        }
-        newNode.setNext(current.getNext());
-        current.setNext(newNode);
-        
-        return sortedHead;
-    }
-    
-    private void displayList(NodeUser startNode) {
-        System.out.println("\n╔════════════════════════════════════════════════════════╗");
-        System.out.println("║              DAFTAR USER (Sorted by Tiket)             ║");
-        System.out.println("╠════════════════════════════════════════════════════════╣");
 
-        NodeUser current = startNode;
-        while (current != null) {
-            System.out.printf("║ ID: %-8s | Nama: %-15s | Tiket: %-3d      ║\n",
-                current.getUserId(), current.getNama(), current.getNoTiket());
-            current = current.getNext();
-        }
-        System.out.println("╚════════════════════════════════════════════════════════╝");
-    }
+        // BUAT SALINAN LIST (Agar urutan asli di head tidak rusak)
+        NodeUser tempHead = new NodeUser(head.getUserId(), head.getNama(), head.getPassword());
+        tempHead.setNoTiket(head.getNoTiket());
     
+        NodeUser currentOriginal = head.getNext();
+        NodeUser currentNew = tempHead;
+
+        while (currentOriginal != null) {
+            NodeUser newNode = new NodeUser(currentOriginal.getUserId(), currentOriginal.getNama(), currentOriginal.getPassword());
+            newNode.setNoTiket(currentOriginal.getNoTiket());
+            currentNew.setNext(newNode);
+            currentNew = newNode;
+            currentOriginal = currentOriginal.getNext();
+        }
+
+        // SORTING LIST SALINAN (Bubble Sort)
+        for (NodeUser i = tempHead; i != null; i = i.getNext()) {
+            for (NodeUser j = i.getNext(); j != null; j = j.getNext()) {
+                if (i.getNoTiket() < j.getNoTiket()) {
+                    String tId = i.getUserId();
+                    String tNama = i.getNama();
+                    int tTiket = i.getNoTiket();
+
+                    i.setUserId(j.getUserId());
+                    i.setNama(j.getNama());
+                    i.setNoTiket(j.getNoTiket());
+
+                    j.setUserId(tId);
+                    j.setNama(tNama);
+                    j.setNoTiket(tTiket);
+                }
+            }
+        }
+
+        System.out.println("\n╔════════════════════════════════════════════════════════╗");
+        System.out.println("║                    DAFTAR USER                         ║");
+        System.out.println("╠════════════════════════════════════════════════════════╣");
+        NodeUser printTemp = tempHead;
+        while (printTemp != null) {
+            System.out.println("ID: " + printTemp.getUserId() + " | Nama: " + printTemp.getNama() + " | Tiket: " + printTemp.getNoTiket());
+            printTemp = printTemp.getNext();
+        }
+    }
+
     // display semua user (blum sorting)
     public void displayAll() {
         if (head == null) {
